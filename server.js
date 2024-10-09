@@ -211,7 +211,7 @@ app.post('/api/ratings', async (req, res) => {
         item.ratings.push(ratingNumber);
         const totalRatings = item.ratings.length;
         const sumRatings = item.ratings.reduce((sum, curr) => sum + curr, 0);
-        item.avgRating = sumRatings / totalRatings;
+        item.avgRating = Number((sumRatings / totalRatings).toFixed(1));
         await item.save();
         res.status(200).json({ message: 'Rating added', item });
     } catch (err) {

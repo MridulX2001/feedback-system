@@ -159,9 +159,10 @@ const Home = () => {
             <h3 className="text-lg font-bold">{item.name}</h3>
             <p>{item.description}</p>
             <p className="mt-2 text-sm text-gray-600">ID: {item._id}</p>
+            <p className="mt-2 text-sm text-gray-600">Rating: {item.avgRating}</p>
             <div className="mt-2">
-              <h4 className="text-sm font-semibold mb-2">Reviews:</h4>
-              <p>{item.reviews.length > 0 ? item.reviews.join(', ') : 'No reviews yet'}</p>
+              {/*<h4 className="text-sm font-semibold mb-2">Reviews:</h4>
+              <p>{item.reviews.length > 0 ? item.reviews.join(', ') : 'No reviews yet'}</p>*/}
 
               {/* Button to show/hide reviews */}
               <button
@@ -171,14 +172,14 @@ const Home = () => {
                 {allReviews[item._id] ? 'Hide All Reviews' : 'Show All Reviews'}
               </button>
 
-              {/* Render reviews in dropdown when button is clicked */}
+              {/* Render reviews in dropdown when button is clicked
               {allReviews[item._id] && (
                 <div className="mt-2">
                   {allReviews[item._id].map((review, index) => (
                     <p key={index} className="text-gray-700">{review}</p>
                   ))}
                 </div>
-              )}
+              )} */}
 
               {/* Add Review button */}
               <button
@@ -187,6 +188,45 @@ const Home = () => {
               >
                 {selectedItemId === item._id ? 'Hide Review Form' : 'Add Review'}
               </button>
+
+              {/* Show review form
+              {selectedItemId === item._id && (
+                <div className="mt-2">
+                  <textarea
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    className="border p-2 w-full rounded mb-2"
+                    placeholder="Enter your review"
+                  />
+                  <button
+                    onClick={() => handleReviewSubmit(item._id)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    Submit Review
+                  </button>
+                </div>
+                
+              )} */}
+
+              {/*Add Rating Button*/ }
+              <button
+                onClick={() => toggleRatingForm(item._id)}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4 ml-2"
+              >
+                {selectedItemIdForRating === item._id ? 'Hide' : 'Rate'}
+              </button>
+
+              
+
+
+              {/* Render reviews in dropdown when button is clicked */}
+              {allReviews[item._id] && (
+                <div className="mt-2">
+                  {allReviews[item._id].map((review, index) => (
+                    <p key={index} className="text-gray-700">{review}</p>
+                  ))}
+                </div>
+              )}
 
               {/* Show review form */}
               {selectedItemId === item._id && (
@@ -207,14 +247,9 @@ const Home = () => {
                 
               )}
 
-              {/*Add Rating Button*/ }
-              <button
-                onClick={() => toggleRatingForm(item._id)}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4 ml-2"
-              >
-                {selectedItemIdForRating === item._id ? 'Hide Rating Form' : 'Rate'}
-              </button>
-              {/* Show review form */}
+
+
+              {/* Show rating form */}
               {selectedItemIdForRating === item._id && (
                 <div className="mt-2">
                   <textarea
