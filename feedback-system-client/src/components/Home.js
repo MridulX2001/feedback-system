@@ -9,7 +9,9 @@ const Home = () => {
     imageUrl: ''
   });
   const [review, setReview] = useState('');
+  const [rating, setRating] = useState('');
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [selectedItemIdForRating, setSelectedItemIdForRating] = useState(null);
   const [allReviews, setAllReviews] = useState({});
   const [showNewItemForm, setShowNewItemForm] = useState(false); // State to toggle form
 
@@ -75,6 +77,29 @@ const Home = () => {
       fetchReviews(itemId);
     }
   };
+
+
+
+  const handleRatingSubmit = async (itemId) => {
+    try {
+      await axios.post('http://localhost:5000/api/ratings', { itemId, rating });
+      setRating('');
+      fetchItems();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleRatingForm = (itemId) => {
+    if (selectedItemIdForRating === itemId) {
+      setSelectedItemIdForRating(null);
+    } else {
+      setSelectedItemIdForRating(itemId);
+    }
+  };
+
+
+
 
   return (
     <div className="p-8">
@@ -179,7 +204,36 @@ const Home = () => {
                     Submit Review
                   </button>
                 </div>
+                
               )}
+
+              {/*Add Rating Button*/ }
+              <button
+                onClick={() => toggleRatingForm(item._id)}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4 ml-2"
+              >
+                {selectedItemIdForRating === item._id ? 'Hide Rating Form' : 'Rate'}
+              </button>
+              {/* Show review form */}
+              {selectedItemIdForRating === item._id && (
+                <div className="mt-2">
+                  <textarea
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                    className="border p-2 w-full rounded mb-2"
+                    placeholder="Enter your rating (1-5)"
+                  />
+                  <button
+                    onClick={() => handleRatingSubmit(item._id)}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    Submit Rating
+                  </button>
+                </div>
+                
+              )}
+
+
             </div>
           </div>
         ))}

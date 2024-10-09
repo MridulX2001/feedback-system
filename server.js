@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema({
     description: { type: String, required: true },
     imageUrl: { type: String, required: true },
     reviews: { type: [String], default: []}, // Each item has multiple reviews
+    ratings: { type: [Number], default: [] }, // Array of numbers for ratings
+    avgRating: { type: Number, default: 0 }, // Average rating as a floating-point number
     }, {timestamps: true} );
 
 const User = mongoose.model("User", userSchema);
@@ -195,6 +197,26 @@ app.post('/api/reviews', async (req, res) => {
     } catch (err) {
         console.error("Error adding review:", err);
         res.status(500).json({ message: 'Error adding review', error: err.message });
+    }
+});
+
+app.post('/api/ratings', async (req, res) => {
+    const { itemId, rating } = req.body;
+    const ratingNumber = Number(rating);
+    try {
+        const item = await Item.findById(itemId);
+        if (!item) {
+            return res.status(404).json({message: 'Item not found'});
+        }
+        item.ratings.push(ratingNumber);
+        const totalRatings = item.ratings.length;
+        const sumRatings = item.ratings.reduce((sum, curr) => sum + curr, 0);
+        item.avgRating = sumRatings / totalRatings;
+        await item.save();
+        res.status(200).json({ message: 'Rating added', item });
+    } catch (err) {
+        console.error("Error adding rating:", err);
+        res.status(500).json({ message: 'Error adding rating', error: err.message });
     }
 });
 
