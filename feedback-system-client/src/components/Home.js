@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -14,6 +15,7 @@ const Home = () => {
   const [selectedItemIdForRating, setSelectedItemIdForRating] = useState(null);
   const [allReviews, setAllReviews] = useState({});
   const [showNewItemForm, setShowNewItemForm] = useState(false); // State to toggle form
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchItems();
@@ -99,7 +101,16 @@ const Home = () => {
   };
 
 
+  const handleLogout = () => {
+    // Remove the token from local storage
+    localStorage.removeItem('token');
+    
+    // Optionally, clear other user data from local storage or state
+    // localStorage.removeItem('userData'); // if any other data is stored
 
+    // Redirect the user to the login page (or any other page)
+    navigate('/');
+  };
 
   return (
     <div className="p-8">
@@ -107,6 +118,15 @@ const Home = () => {
       
       {/* Button to show/hide the Add New Item form */}
       <div className="text-center mb-6">
+
+        <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 block mx-auto mb-2"
+              onClick={handleLogout}
+            >
+              Logout
+        </button>
+
+
         <button
           onClick={() => setShowNewItemForm(!showNewItemForm)}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
@@ -158,7 +178,7 @@ const Home = () => {
             <img src={item.imageUrl} alt={item.name} className="h-48 w-full object-contain mb-4" />
             <h3 className="text-lg font-bold">{item.name}</h3>
             <p>{item.description}</p>
-            <p className="mt-2 text-sm text-gray-600">ID: {item._id}</p>
+            <p className="mt-2 text-sm text-gray-600">ID: {item._id.slice(0,6)}</p>
             <p className="mt-2 text-sm text-gray-600">Rating: {item.avgRating}</p>
             <div className="mt-2">
               {/*<h4 className="text-sm font-semibold mb-2">Reviews:</h4>
@@ -223,7 +243,7 @@ const Home = () => {
               {allReviews[item._id] && (
                 <div className="mt-2">
                   {allReviews[item._id].map((review, index) => (
-                    <p key={index} className="text-gray-700">{review}</p>
+                    <p key={index} className="text-gray-700">{index+1}. {review}</p>
                   ))}
                 </div>
               )}
